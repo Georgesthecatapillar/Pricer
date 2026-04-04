@@ -1,4 +1,4 @@
-# Black-Scholes Option Strategy Dashboard
+### Black-Scholes Option Strategy Dashboard
 # Interactive dashboard for pricing option strategies using Black-Scholes model (with dividend yield).
 # Computes prices, Greeks (Delta, Gamma, Theta, Vega, Rho), payoffs, time value, and premiums.
 # Plots combined or separate metrics vs. underlying price (S).
@@ -144,6 +144,54 @@ st.markdown("""
         font-size: 0.82rem;
     }
 
+    /* Sidebar labels & text — force white */
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] .stSlider label,
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] p {
+        color: #e2e4ef !important;
+    }
+
+    /* Slider value / tick labels */
+    section[data-testid="stSidebar"] [data-testid="stSlider"] span {
+        color: #e2e4ef !important;
+    }
+
+    /* Checkbox label */
+    section[data-testid="stSidebar"] .stCheckbox label p {
+        color: #e2e4ef !important;
+    }
+
+    /* Caption text in sidebar */
+    section[data-testid="stSidebar"] .stCaptionContainer p {
+        color: #8b8fa8 !important;
+    }
+
+    /* Sidebar labels & text — force white */
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] .stSlider label,
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] p {
+        color: #e2e4ef !important;
+    }
+
+    /* Slider value / tick labels */
+    section[data-testid="stSidebar"] [data-testid="stSlider"] span {
+        color: #e2e4ef !important;
+    }
+
+    /* Checkbox label */
+    section[data-testid="stSidebar"] .stCheckbox label p {
+        color: #e2e4ef !important;
+    }
+
+    /* Caption text in sidebar */
+    section[data-testid="stSidebar"] .stCaptionContainer p {
+        color: #8b8fa8 !important;
+    }
+
     /* Section label */
     .section-label {
         font-family: 'IBM Plex Mono', monospace;
@@ -240,6 +288,11 @@ STRATEGIES = {
     "Butterfly":      [{'type': 'call', 'strike':  95.0, 'position':  1},
                        {'type': 'call', 'strike': 100.0, 'position': -2},
                        {'type': 'call', 'strike': 105.0, 'position':  1}],
+    "Collar":         [{'type': 'call', 'strike': 100.0, 'position':  1},
+                       {'type': 'put',  'strike': 100.0, 'position': -1}],
+    "Seagull":        [{'type': 'call', 'strike': 100.0, 'position':  1},
+                       {'type': 'call', 'strike': 105.0, 'position': -1},
+                       {'type': 'put',  'strike':  95.0, 'position': -1}],
 }
 
 # ─── Session state defaults ───
@@ -292,12 +345,12 @@ with st.sidebar:
 
     # ── Predefined strategies ──
     st.markdown('<p class="section-label">Predefined Strategies</p>', unsafe_allow_html=True)
-    strategy_cols = st.columns(2)
-    for i, name in enumerate(STRATEGIES):
-        with strategy_cols[i % 2]:
-            if st.button(name, use_container_width=True, key=f"strat_{name}"):
-                st.session_state.legs = [leg.copy() for leg in STRATEGIES[name]]
-                st.rerun()
+    strategy_names = ["— Select a strategy —"] + list(STRATEGIES.keys())
+    selected_strategy = st.selectbox("Strategy", strategy_names, key="strategy_select", label_visibility="collapsed")
+    if st.button("Load Strategy", use_container_width=True):
+        if selected_strategy != "— Select a strategy —":
+            st.session_state.legs = [leg.copy() for leg in STRATEGIES[selected_strategy]]
+            st.rerun()
 
     st.divider()
 
